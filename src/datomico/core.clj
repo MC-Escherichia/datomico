@@ -104,6 +104,20 @@ datomic's error message: 'Unable to resolve entity: :db.type/'..."
                (keyword (name nsp) (name (first %))) (rest %))
        attrs))
 
+(defn build-all-schemas
+  "build all schemas, all schema definition is a map which key is schema name
+   and value is schema attributes
+
+  Example:
+  (build-all-schemas
+     {:user [[:name :string :index :unique :nofulltext]
+             [:password :string :nofulltext]]
+      :log  [[:name :string :index :nofulltext]
+             [:time :long :index]]})
+  "
+  [schemas]
+  (flatten (map (fn [[k v]] (build-schema k v)) schemas)))
+
 (defn build-seed-data
   "Given a keyword namespace and a vector of data, prepares seed data for a transaction."
   [nsp attrs]
