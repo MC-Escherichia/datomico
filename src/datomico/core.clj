@@ -24,7 +24,10 @@
   [{:keys [uri schemas seed-data dynamic-vars]}]
   (let [uri (or uri (rand-connection))]
     (db/set-uri uri)
-    (api/create-database uri)
+    (try
+      (api/create-database uri)
+      (catch Exception e
+        (prn (str "Create Datomic Database Error:" (.getMessage e)))))
     (when (seq schemas)
       (db/load-schemas schemas))
     (when (seq seed-data)
