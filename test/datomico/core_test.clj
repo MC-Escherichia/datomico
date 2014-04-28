@@ -17,7 +17,7 @@
             :db/valueType :db.type/string
             :db/cardinality :db.cardinality/one
             :db/index false
-            :db/fulltext true
+            :db/fulltext false
             :db/noHistory false}
            (-> (build-and-transact-schema :animal [[:sound :string]])
                first
@@ -50,6 +50,12 @@
           (build-and-transact-schema :account [[:password-hash :string :nofulltext]])
           first
           :db/fulltext))))
+  (testing ":fulltext enables :db/fulltext"
+    (is
+     (->
+      (build-and-transact-schema :account [[:password-hash :string :fulltext]])
+      first
+      :db/fulltext)))
   (testing ":unique adds a :db.unique/value"
     (is (= :db.unique/value
          (->

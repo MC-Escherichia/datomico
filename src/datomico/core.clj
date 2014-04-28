@@ -54,7 +54,7 @@ datomic's error message: 'Unable to resolve entity: :db.type/'..."
 (defn- build-schema-attr [attr-name value-type & options]
   (let [documentation (if (string? (last options)) (last options) nil)
         cardinality   (if (some #{:many} options) :db.cardinality/many :db.cardinality/one)
-        fulltext?    (if-not (= value-type :string) false (not (boolean (some #{:nofulltext} options))))
+        fulltext?    (if-not (= value-type :string) false  (boolean (some #{:fulltext} options)))
         history?     (boolean (some #{:nohistory} options))
         index?       (boolean (some #{:index} options))
         unique?      (if (some #{:unique} options) :db.unique/value nil)
@@ -86,8 +86,8 @@ datomic's error message: 'Unable to resolve entity: :db.type/'..."
   additional elements:
 
   :many       Indicates a cardinality of many.
-  :nofulltext Disables fulltext. If an attribute is of type string, fulltext is
-              enabled by default.
+  :fulltext   Enables fulltext. If an attribute is of type string, fulltext is
+              disabled by default.
   :nohistory  Disables history.
   :index      Enables index.
   :component  Enables being a component by setting type and :db/isComponent.
@@ -95,7 +95,7 @@ datomic's error message: 'Unable to resolve entity: :db.type/'..."
 
   Example:
   (build-schema :user
-    [[:name :string :nofulltext \"alphanumeric and underscore only\"]
+    [[:name :string \"alphanumeric and underscore only\"]
     [:email :string :unique :index]
     [:limb :component]])
   "
@@ -110,9 +110,9 @@ datomic's error message: 'Unable to resolve entity: :db.type/'..."
 
   Example:
   (build-all-schemas
-     {:user [[:name :string :index :unique :nofulltext]
-             [:password :string :nofulltext]]
-      :log  [[:name :string :index :nofulltext]
+     {:user [[:name :string :index :unique]
+             [:password :string]]
+      :log  [[:name :string :index]
              [:time :long :index]]})
   "
   [schemas]
