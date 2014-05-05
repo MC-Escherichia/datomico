@@ -126,6 +126,6 @@ Also ensures that only an entity belonging to this namespace is returned."
 
 (defn cas-tx
   "Returns transactable data for compare and swap a entity value
-   Note: attr-key must be fully-qualified key."
-  [eid attr-key old-val new-val]
-  [:db.fn/cas eid attr-key old-val new-val])
+   Note: fully-attr-key must be fully-qualified key."
+  [eid fully-attr-key old-val new-val]
+  [:db.fn/cas eid fully-attr-key old-val new-val])
