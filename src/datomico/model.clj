@@ -2,7 +2,8 @@
   "Useful fns for an entity type that has all its attributes in the same namespace."
   (:require [datomico.util :as util]
             [datomico.db :as db]
-            [datomico.action :as action]))
+            [datomico.action :as action]
+            [datomic.api]))
 
 (defn find-id
   "If entity is found, returns it as a map with no namespace. Otherwise returns nil.
@@ -106,3 +107,25 @@ Also ensures that only an entity belonging to this namespace is returned."
   `(do
     (def ~(symbol (name fn-name))
       (partial ~(deref (resolve (symbol "datomico.model" (name fn-name)))) ~nsp))))
+
+(defmacro dbfn-tx
+  "Returns transactable data for add a transaction function.
+   Note: all names in fn-code must be fully-qualified name.
+   E.g.: (dbfn-tx :credit [db eid amount]
+           (let [ e (datomic.api/entity db eid)
+                  balance (+ (:account/balance e 0) amount) ]
+             [[:db/add eid :account/balance balance]]))"
+  [fn-name-keyword params fn-code]
+  `{:db/id (datomic.api/tempid :db.part/user)
+    :db/ident ~fn-name-keyword
+    :db/fn (datomic.api/function
+            {:lang "clojure"
+              :params '[~@params]
+             :code (str '~fn-code)})})
+
+
+(defn cas-tx
+  "Returns transactable data for compare and swap a entity value
+   Note: attr-key must be fully-qualified key."
+  [eid attr-key old-val new-val]
+  [:db.fn/cas eid attr-key old-val new-val])
