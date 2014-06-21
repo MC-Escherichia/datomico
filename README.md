@@ -1,15 +1,9 @@
 ## Description
 
 Use datomic with intention revealing names. Ease of use and sticking to datomic's principles are
-encouraged. Should work with datomic >= 0.8.3789.
+encouraged. Should work with datomic >= 0.8.3789. 
 
-[![Build Status](https://travis-ci.org/cldwalker/datomico.png?branch=master)](https://travis-ci.org/cldwalker/datomico)
-
-## Install
-
-Add to your project.clj:
-
-    [datomico "0.2.0"]
+/(forked to change allow different namespaced keys)/
 
 ## Usage
 
